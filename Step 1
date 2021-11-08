@@ -1,0 +1,116 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        char game[][] = new char[3][3];
+        String play;
+
+        System.out.println("Enter the cells: ");
+        play = scanner.next();
+
+        int countx = 0, counto = 0;
+
+        char[] pl = play.toCharArray();
+        int a = 0;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                game[i][j] = pl[a];
+                if (game[i][j] == 'X'){
+                    countx++;
+                } else if(game[i][j] == 'O'){
+                    counto++;
+                }
+                a++;
+            }
+        }
+
+        print(game);
+
+        int coord1, coord2;
+        boolean flag = false;
+
+        do {
+            try {
+                System.out.println("Enter the coordinates: ");
+                coord1 = scanner.nextInt()-1;
+                coord2 = scanner.nextInt()-1;
+
+
+                if (game[coord1][coord2] != '_') {
+                    System.out.println("This cell is occupied! Choose another one!");
+                } else {
+                    if (countx > counto){
+                        game[coord1][coord2] = 'O';
+                    }  else {
+                        game[coord1][coord2] = 'X';
+                    }
+                    flag = true;
+                }
+
+            } catch (InputMismatchException stringEx) {
+                System.out.println("You should enter numbers!");
+                scanner.nextLine();
+            } catch (ArrayIndexOutOfBoundsException boundsEx){
+                System.out.println("Coordinates should be from 1 to 3!");
+                scanner.nextLine();
+            }
+        } while (!flag);
+
+        print(game);
+
+        boolean checkRowsWin = false, checkColWin = false, checkDiagWin = false;
+
+        for (int i = 0; i < 3; i++) {
+            if (checkRowCol(game[i][0], game[i][1], game[i][2])) {
+                checkRowsWin = true;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (checkRowCol(game[0][i], game[1][i], game[2][i])) {
+                checkColWin = true;
+            }
+        }
+
+        if (checkRowCol(game[0][0], game[1][1], game[2][2])
+                || checkRowCol(game[0][2], game[1][1], game[2][0])){
+            checkDiagWin = true;
+        }
+
+        if (checkRowsWin || checkColWin || checkDiagWin){
+            if (countx > counto){
+                System.out.println("O wins");
+            } else {
+                System.out.println("X wins");
+            }
+
+        } else {
+            System.out.println("Game not finished");
+        }
+
+    }
+
+
+    private static boolean checkRowCol(char c1, char c2, char c3) {
+        return ((c1 != '_') && (c1 == c2) && (c2 == c3));
+    }
+
+    private static void print(char[][] game) {
+        System.out.println("---------");
+        for (int i = 0; i < 3; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < 3; j++) {
+                if (game[i][j] == '_') {
+                    System.out.print("  ");
+                } else {
+                    System.out.print(game[i][j] + " ");
+                }
+            }
+            System.out.println("|");
+        }
+        System.out.println("---------");
+    }
+}
